@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "include/head.html" %}
+</head>
+<body>
+<div class="container-fluid bg-trasparent my-5 p-3" style="position: relative" id="app">
+    {% include "include/navbar.html" %}
+    <div class="form-group my-5">
+        <input type="text" class="form-control" id="search" placeholder="Example input placeholder"
+               placeholder="Name..." v-model="txtSearch" @keyup="searchTimeout()">
+    </div>
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
+        <div class="col hp"
+             v-for="(product, index) in this.products"
+        >
+            <div class="card h-100 shadow-sm">
+                <a href="#">
+                    <img src="https://daily.jstor.org/wp-content/uploads/2015/04/Coke_Branding_1050x700.jpg"
+                         class="card-img-top"
+                         alt="product.title"/>
+                </a>
+
+                <div class="label-top shadow-sm">
+                    <a class="text-white" target="_blank" href="https://amzn.to/3qeS1Fe">[[ product.category ]]</a>
+                </div>
+                <div class="card-body">
+                    <div class="clearfix mb-3">
+                        <span class="float-start badge rounded-pill bg-success">$[[ product.price ]]</span>
+
+                        <span class="float-end"><a href="#" class="small text-muted text-uppercase aff-link">reviews</a></span>
+                    </div>
+                    <h5 class="card-title">
+                        <a target="_blank" href="#">[[ product.name ]]</a>
+                    </h5>
+
+                    <div class="d-grid gap-2 my-4">
+
+                        <a href="#" class="btn btn-warning bold-btn">add to cart</a>
+
+                    </div>
+                    <div class="clearfix mb-1">
+
+                        <span class="float-start"><a href="#"><i class="fas fa-question-circle"></i></a></span>
+
+                        <span class="float-end">
+              <i class="far fa-heart" style="cursor: pointer"></i>
+
+            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var vue_det = new Vue({
+        el: '#app',
+        delimiters: ['[[', ']]'],
+        data: {
+            timeout: 500,
+            message: 'hello',
+            products: [],
+            categories: [],
+            cache: {},
+            txtSearch: '',
+            url: 'http://localhost:5000'
+
+
+        },
+        methods: {
+            onSearch() {
+                axios.get(`${this.url}/api/products?search=${this.txtSearch}`).then((res) => {
+                    this.products = res.data
+                })
+            },
+            searchTimeout() {
+                let timeout = null;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    this.onSearch();
+                }, this.timeout);
+            },
+            categoryFilter(id){
+                axios.get(`${this.url}/api/products?category=${id}`).then((res) => {
+                    this.products = res.data
+                })
+            }
+        },
+        created() {
+
+
+        },
+        mounted() {
+            axios.get(`${this.url}/api/products`).then((res) => {
+                this.products = res.data
+            })
+            axios.get(`${this.url}/api/category`).then((res) => {
+                this.categories = res.data
+            })
+        },
+    });
+</script>
+</body>
+</html>

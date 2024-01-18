@@ -1,0 +1,96 @@
+{% extends "admin/master.html" %}
+{% block heading %}
+    Products
+{% endblock %}
+{% block button %}
+    <a href="/admin/product/add" class="btn btn-primary"><i class="fas fa-plus"></i> Add Product</a>
+
+{% endblock %}
+{% block content %}
+    {% if success != '' %}
+        {% if type == 3 %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Product removed successfully.' if success==True else 'Failed to remove product.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% elif type==2 %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Product updated successfully.' if success==True else 'Failed to updated product.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% else %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Product added successfully.' if success==True else 'Failed to add product.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}
+    {% endif %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Product List</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th width="50">#</th>
+                            <th width="50">Image</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Cost</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th width="200">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for product in products %}
+
+
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    <img src="{{ product['image'] }}" style="border-radius: 50%;" width="35" height="35"
+                                         alt="">
+                                </td>
+                                <td>{{ product['name'] }}</td>
+                                <td>{{ product['quantity'] }}</td>
+                                <td>${{ product['cost'] }}</td>
+                                <td>${{ product['price'] }}</td>
+                                <td>{{ "In Stock" if product['status'] =='1' else "Out of Stock" }}</td>
+                                <td class="d-flex" style="gap:10px">
+                                    <a href="/admin/product/edit/{{ product['id'] }}" class="btn btn-secondary">
+                                        <i class="fas fa-edit"></i>
+                                        Edit</a>
+                                    <form method="POST" action="/admin/product" hx-boost="true">
+                                        <input name="id" type="hidden" value="{{ product['id'] }}"/>
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+
+{% endblock %}

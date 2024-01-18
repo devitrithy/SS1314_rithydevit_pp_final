@@ -1,0 +1,27 @@
+<nav
+  style="
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: 15px 10%;
+  "
+>
+  <div class="row" hx-boost="true">
+    {% for category in categories %} {% if active==category %}
+    <a class="btn btn-primary col mx-2" href="?category={{ category }}"
+      >{{ category }}</a
+    >
+    {% elif active==null %}
+    <a class="btn btn-primary col mx-2" href="?category={{ category }}"
+      >{{ category }}</a
+    >
+    {% else %}
+    <a class="btn btn-outline-primary col mx-2" href="?category={{ category }}"
+      >{{ category }}</a
+    >
+
+    {% endif %} {% endfor %}
+  </div>
+</nav>

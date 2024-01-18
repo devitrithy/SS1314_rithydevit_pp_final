@@ -1,0 +1,56 @@
+{% extends "/admin/master.html" %} {% block heading %} Add Product {% endblock
+%} {% block button %}
+<a href="/admin/product" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+{% endblock %} {% block content %}
+<form class="container-lg" method="POSt" action="/admin/product/add" hx-boost="true">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Product Name</label>
+        <input id="name" type="text" class="form-control" name="name" placeholder="Enter ..." />
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Quantity</label>
+        <input id="qty" type="number" name="qty" class="form-control" placeholder="Enter ..." />
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Cost</label>
+        <input id="cost" type="number" name="cost" class="form-control" placeholder="Enter ..." />
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>Price</label>
+        <input id="price" type="number" name="price" class="form-control" placeholder="Enter ..." />
+      </div>
+    </div>
+      <div class="col-sm-12">
+          <div class="form-group">
+              <label>Image URL</label>
+              <input id="price" type="text" name="img" class="form-control" placeholder="Enter ..." />
+          </div>
+      </div>
+    <div class="col-sm-12">
+      <div class="input-group">
+        <div class="custom-control custom-checkbox mr-sm-2 mb-3 float-right">
+          <input type="checkbox" class="custom-control-input" name="status" checked id="customControlAutosizing">
+          <label class="custom-control-label" for="customControlAutosizing">In Stock</label>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 mt-5">
+      <button type="submit" class="btn btn-primary float-right">
+        <i class="fas fa-save"></i> Save
+      </button>
+      <button type="button" class="btn btn-danger float-right mr-2" id="btnClear" onclick="clear()">
+        <i class="fas fa-trash"></i> Clear
+      </button>
+    </div>
+  </div>
+</form>
+
+{% endblock %}

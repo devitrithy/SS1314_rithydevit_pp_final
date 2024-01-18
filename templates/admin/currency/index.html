@@ -1,0 +1,91 @@
+{% extends "admin/master.html" %}
+{% block heading %}
+    Currency
+{% endblock %}
+{% block button %}
+    <a href="/admin/currency/add" class="btn btn-primary"><i class="fas fa-plus"></i> Add Currency</a>
+
+{% endblock %}
+{% block content %}
+    {% if success != '' %}
+        {% if type == 3 %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Currency removed successfully.' if success==True else 'Failed to remove currency.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% elif type==2 %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Currency updated successfully.' if success==True else 'Failed to updated currency.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% else %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Currency added successfully.' if success==True else 'Failed to add currency.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}
+    {% endif %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Currency List</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th width="50">#</th>
+                            <th>Currency Name</th>
+                            <th>Code</th>
+                            <th>Symbol</th>
+                            <th>Is Default</th>
+                            <th>Sell Out Price</th>
+                            <th width="200">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for currency in currencys %}
+
+
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ currency['name'] }}</td>
+                                <td>{{ currency['code'] }}</td>
+                                <td>{{ currency['symbol'] }}</td>
+                                <td>{{ '✅' if currency['is_default'] == '1' else '❌' }}</td>
+                                <td>{{ currency['sell_out_price'] }}</td>
+                                <td class="d-flex" style="gap:10px">
+                                    <a href="/admin/currency/edit/{{ currency['id'] }}" class="btn btn-secondary">
+                                        <i class="fas fa-edit"></i>
+                                        Edit</a>
+                                    <form method="POST" action="/admin/currency" hx-boost="true">
+                                        <input name="id" type="hidden" value="{{ currency['id'] }}"/>
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+
+{% endblock %}

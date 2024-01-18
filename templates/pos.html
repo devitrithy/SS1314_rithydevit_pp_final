@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "include/header_pos.html" %}
+</head>
+<body>
+
+<div id="app">
+    <div>
+        {#slide show#}
+        <nav class="main-header navbar navbar-expand-md bg-info p-0 m-0">
+            <div class="container-fluid p-0 m-0">
+                <a href="https://clinic.phama-tech.com/admin" class="navbar-brand">
+                    <img src="https://i.pinimg.com/originals/6e/cb/91/6ecb91e73eab30f51b0b29a880338147.png"
+                         style="width: 50px;height: 50px;border-radius: 50%">
+                </a>
+                <marquee>
+                <span class="brand-text font-weight-light" style="font-family: Moul;font-size: 20px;color: white">
+                    អ៊ុីឡាយលក់ចាប់ហួយ 🥰🐣🐵🙈🙉🙊🐸🥬
+                </span>
+                </marquee>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                {#product_card#}
+                <div class="col-6">
+                    {# category #}
+                    <div class="row"
+                         style="position: sticky; top: 0; z-index: 100"
+                    >
+                        <div class="col-12 p-1 bg-white"
+                             style=" box-shadow: 1px 9px 25px -11px gray"
+                        >
+                            <button
+                                    v-for="(item, index) in this.category_list"
+                                    type="button"
+                                    class="btn btn-outline-info mr-2"
+                                    @click="searchByCategory(item.id)"
+                                    style="text-transform: uppercase">
+                                [[ item.name ]]
+                            </button>
+                        </div>
+                    </div>
+                    {# prouct #}
+                    <div class="row mt-1" style="max-height: 85vh; overflow: scroll">
+                        <div
+                                @click="onProductSelect(item)"
+                                v-for="(item, index) in this.product_list"
+                                class="col-lg-2 col-md-6 col-sm-6 col-3 mb-3 mt-3 ml-3 mr-5"
+                        >
+
+                            <div
+                                    style="width: 150px"
+                                    class="card"
+                            >
+                                <div class="image-container">
+                                    <div class="first">
+                                        <div class="d-flex justify-content-between align-items-end">
+                                            <span class="discount bg-success">[[ item.category ]]</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="discount mt-1">-0%</span>
+                                        </div>
+                                    </div>
+                                    <img src="/static/sting-energy-drink.jpeg"
+                                         class="img-fluid rounded thumbnail-image">
+                                </div>
+                                <div class="product-detail-container p-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="dress-name">[[ item.name ]]</h5>
+                                        <div class="d-flex flex-column mb-2">
+                                            <span class="new-price text-dark">[[ item.price ]] $</span>
+                                            <del class="old-price text-right"
+                                                 style="font-size: 12px; background-color: yellow; color: firebrick"
+                                            >
+                                                [[ item.price ]] $r
+                                            </del>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-1">
+                                        <div>
+                                            <i class="fa fa-star-o rating-star"></i>
+                                            <span class="rating-number">4.8</span>
+                                        </div>
+                                        <span class="buy">BUY +</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {#sale_list#}
+                <div class="col-6" style="max-height: 85vh; overflow: scroll">
+                    <table class="p-0 m-0 table table-borderless table-striped">
+                        <thead>
+                        <tr class="bg-secondary text-white">
+                            <th>ល.រ</th>
+                            <th>ការពិពណ៌នា</th>
+                            <th>ចំនួន</th>
+                            <th>តម្លៃលក់($)</th>
+                            <th>បញ្ខុះតម្លៃ(%)</th>
+                            <th>សរុប($)</th>
+                            <th>សកម្មភាព</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td v-if="this.selected_item.length == 0" colspan="7" class="text-center">
+                                <span style="color: #cccc">no record...</span>
+                            </td>
+                        </tr>
+                        <template v-if="this.selected_item.length > 0">
+                            <tr
+                                    v-for="(item, index) in selected_item"
+                            >
+                                <td>
+                                    <span>[[ index + 1 ]]</span>
+                                </td>
+                                <td>[[ item.name ]]</td>
+                                <td>
+                                    <input
+                                            autocomplete="off"
+                                            v-model="item.qty"
+                                            style="width: 100px; text-align: center"
+                                            type="number"
+                                            @input="sound('click'), calculator"
+                                    >
+                                </td>
+                                <td>[[ item.price ]]</td>
+                                <td>0.0 %</td>
+                                <td>[[ (item.qty * item.price).toLocaleString() ]]</td>
+                                <td>
+                                    <a @click="deleteItem(index)" href="#" class="text-danger">
+                                        <i class="fas fa-trash"></i>
+                                        លុប
+                                    </a>
+                                </td>
+                            </tr>
+                        </template>
+
+                        </tbody>
+                    </table>
+                    <hr>
+                    <div class="row" style="position: sticky; bottom: 10px">
+                        <div class="col-12">
+                            <table class="table table-sm table-borderless table-striped">
+                                <tr>
+                                    <td style="text-align: right">Total ($)</td>
+                                    <td style="text-align: right">[[ (this.total).toLocaleString() ]] $</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right">Received amount ($)</td>
+                                    <td style="text-align: right">
+                                        <input
+                                                v-model="received_amount"
+                                                type="number"
+                                                class="input w-100"
+                                        >
+                                    </td>
+                                <tr v-if="this.received_amount > this.total">
+                                    <td
+                                            style="text-align: right"
+                                    >
+                                        <span style="background-color: yellow; color: firebrick"> Change amount ($)</span>
+                                    </td>
+                                    <td style="text-align: right">
+                                        [[ (this.received_amount - this.total).toLocaleString() ]] $
+                                    </td>
+                                </tr>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <button @click="cancelOrder" type="button" class="btn btn-danger w-100">Cancel</button>
+                        </div>
+                        <div class="col-6">
+                            <button
+                                    @click="pay"
+                                    type="button"
+                                    class="btn btn-success w-100"
+                            >Pay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5 pb-5">
+    </div>
+</div>
+</body>
+<script>
+    var vue_obj = new Vue({
+        el: '#app',
+        delimiters: ['[[', ']]'],
+        data: {
+            product_list: [],
+            category_list: [],
+            selected_item: [],
+            txt_src: null,
+            total: 0,
+            received_amount: 0,
+        },
+        methods: {
+            liveSearch(evt) {
+                let vm = this
+                clearTimeout(this.typingTimer)
+                this.typingTimer = setTimeout(function () {
+                    $("#product_list").LoadingOverlay("show");
+                    let payload = vm.txt_src.trim()
+                    let url = `http://localhost:5000/get_product_by_filter?txt_src=${payload}`
+                    axios.get(url).then(response => {
+                        vm.product_list = response.data
+                        $("#product_list").LoadingOverlay("hide");
+                    }).catch(function (error) {
+                        alert('error: ' + error.message)
+                        $("#product_list").LoadingOverlay("hide");
+                    });
+                }, this.doneTypingInterval)
+            },
+            searchByCategory(category_id) {
+                $("#product_list").LoadingOverlay("show");
+                let input = {
+                    'category_id': category_id
+                }
+                axios.post('http://localhost:5000/get_product_by_category', input).then(response => {
+                    this.product_list = response.data
+                    $("#product_list").LoadingOverlay("hide");
+                }).catch(function (error) {
+                    alert('error: ' + error.message)
+                    $("#product_list").LoadingOverlay("hide");
+                });
+            },
+            onProductSelect(item) {
+                this.sound('click')
+                let found = this.selected_item.find(obj => {
+                    return obj.id == item.id
+                })
+                if (found == undefined) {
+                    this.selected_item.push(
+                        {
+                            'id': item.id,
+                            'name': item.name,
+                            'qty': 1,
+                            'cost': item.cost,
+                            'price': item.price,
+                        }
+                    )
+                } else {
+                    found.qty++
+                }
+
+                this.calculator(this.selected_item)
+            },
+            calculator() {
+                this.total = 0
+                total = 0
+                this.selected_item.forEach(item => {
+                    total += (parseFloat(item.qty) * parseFloat(item.price))
+                })
+                this.total = total
+                return total
+            },
+            sound(type) {
+                let click = new Audio('./static/sound/click.mp3');
+                let success = new Audio('./static/sound/success.mp3');
+                let error = new Audio('./static/sound/error.mp3');
+                if (type == 'click') {
+                    click.play()
+                }
+                if (type == 'success') {
+                    success.play()
+                }
+                if (type == 'error') {
+                    error.play()
+                }
+            },
+            deleteItem(index) {
+                this.sound('error')
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.selected_item.splice(index, 1);
+                        this.calculator()
+                    }
+                });
+            },
+            cancelOrder() {
+                this.sound('error')
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, cancel it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.selected_item = [];
+                        this.calculator()
+                    }
+                });
+            },
+                        pay() {
+                if (this.selected_item.length == 0 || this.received_amount < this.total) {
+                    this.sound('error')
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Error receive amount",
+                        text: "Something went wrong!",
+                    });
+                } else {
+                    let vm = this
+                    let url = `{{ getBaseUrl() }}/pos/create`
+                    let formData = new FormData
+                    formData.append('selected_item', JSON.stringify(this.selected_item))
+                    formData.append('received_amount', this.received_amount)
+
+                    axios.post(url, formData).then(response => {
+                        if (response.status == 200) {
+                            this.sound('success')
+                            Swal.fire({
+                                title: "Thank you !",
+                                text: "Payment is completed",
+                                icon: "success"
+                            });
+                        }else {
+                             Swal.fire({
+                                title: "Error",
+                                text: "oop error while processing: "+ response.data.error,
+                                icon: "error"
+                            });
+                        }
+                    }).catch(function (error) {
+                        alert('error: ' + error.message)
+                    });
+                }
+            },
+        },
+        created() {
+            $.LoadingOverlay("show");
+        },
+        mounted() {
+            axios.get('http://localhost:5000/get_all_product').then(response => {
+                this.product_list = response.data.product
+                this.category_list = response.data.category
+                console.log()
+            }).catch(function (error) {
+                alert('error: ' + error.message)
+            });
+            $.LoadingOverlay("hide");
+        }
+    });
+</script>
+</html>

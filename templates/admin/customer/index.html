@@ -1,0 +1,90 @@
+{% extends "admin/master.html" %}
+{% block heading %}
+    Customers
+{% endblock %}
+{% block button %}
+    <a href="/admin/customer/add" class="btn btn-primary"><i class="fas fa-plus"></i> Add Customer</a>
+
+{% endblock %}
+{% block content %}
+    {% if success != '' %}
+        {% if type == 3 %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Customer removed successfully.' if success==True else 'Failed to remove customer.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% elif type==2 %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Customer updated successfully.' if success==True else 'Failed to updated customer.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% else %}
+            <div class="alert alert-{{ 'primary' if success==True else 'danger' }}" role="alert">
+                {{ 'Customer added successfully.' if success==True else 'Failed to add customer.' }}
+                <button type="button" class="close text-white" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}
+    {% endif %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Customer List</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th width="50">#</th>
+                            <th width="50">Image</th>
+                            <th>Customer Name</th>
+                            <th>Status</th>
+                            <th width="200">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for customer in customers %}
+
+
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    <img src="{{ customer['image'] }}" style="border-radius: 50%;" width="35" height="35"
+                                         alt="">
+                                </td>
+                                <td>{{ customer['name'] }}</td>
+                                <td>{{ "Active" if customer['status'] ==1 else "In Active" }}</td>
+                                <td class="d-flex" style="gap:10px">
+                                    <a href="/admin/customer/edit/{{ customer['id'] }}" class="btn btn-secondary">
+                                        <i class="fas fa-edit"></i>
+                                        Edit</a>
+                                    <form method="POST" action="/admin/customer" hx-boost="true">
+                                        <input name="id" type="hidden" value="{{ customer['id'] }}"/>
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+
+{% endblock %}
